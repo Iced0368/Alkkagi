@@ -1,0 +1,24 @@
+.stone-container {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+
+    border-radius: 11px;
+    border: 1px solid gray;
+    background-color: black;
+
+    transform: translate(calc(-50% + 1px), calc(-50% + 1px));
+}
+
+.stone-outer {
+    position: fixed;
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+}
+
+.stone-outer.hidden {
+    display: none;
+}
