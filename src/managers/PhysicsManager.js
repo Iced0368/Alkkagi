@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useGoStore } from './stores';
+import { useGoStore, useConfigStore } from '../stores';
 
 const frameInterval = 10;
 const friction = 0.95;
@@ -17,21 +17,29 @@ const getPosDiff = (a , b) => {
     return {x: a.x - b.x, y: a.y - b.y};
 }
 
-const GoPhysics = ({enabled}) => {
+const PhysicsManager = () => {
     const {getStoneInfos, setStoneInfos} = useGoStore();
+    const {physicsEnabled} = useConfigStore();
 
     useEffect(() => {
         const physicsInterval = setInterval(() => {
-            if (enabled) {
+            if (physicsEnabled) {
                 const stoneInfos = getStoneInfos();
 
+                stoneInfos.forEach(element => {
+                    if (element !== null) {
+                        element.dx = friction * (element.dx || 0);
+                        element.dy = friction * (element.dy || 0);
+                        element.x += forceMultiplier * element.dx;
+                        element.y += forceMultiplier * element.dy;
+                    }
+                });
+
                 for(let i = 0; i < stoneInfos.length; i++) {
-                    stoneInfos[i].dx = stoneInfos[i].dx || 0;
-                    stoneInfos[i].dy = stoneInfos[i].dy || 0;
+                    if (stoneInfos[i] === null) continue;
 
                     for(let j = i+1; j < stoneInfos.length; j++) {
-                        stoneInfos[j].dx = stoneInfos[j].dx || 0;
-                        stoneInfos[j].dy = stoneInfos[j].dy || 0;
+                        if (stoneInfos[j] === null) continue;
 
                         const distance = getDistance(stoneInfos[i], stoneInfos[j]);
 
@@ -51,20 +59,13 @@ const GoPhysics = ({enabled}) => {
                     }
                 }
 
-                stoneInfos.forEach(element => {
-                    if (!isNaN(element.dx) && !isNaN(element.dy)) {
-                        element.x += forceMultiplier * element.dx;
-                        element.y += forceMultiplier * element.dy;
-                        element.dx = friction * element.dx;
-                        element.dy = friction * element.dy;
-                    }
-                });
                 setStoneInfos(stoneInfos);
             }
         }, frameInterval);
 
         return () => clearInterval(physicsInterval);
-    }, [enabled]);
+    }, [physicsEnabled]);
 }
 
-export default GoPhysics;
+export {frameInterval};
+export default PhysicsManager;

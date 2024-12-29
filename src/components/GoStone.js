@@ -3,9 +3,8 @@ import { useGoStore, useMouseStore } from '../stores';
 import { useState } from 'react';
 
 const GoStone = ({x, y, color, index, mass, radius}) => {
-    const {setSelected, setStoneInfo, getStoneInfos} = useGoStore();
+    const {getSelected, setSelected, setStoneInfo, getStoneInfos} = useGoStore();
     const {setMouseDown, setMouseUp, getStartPos} = useMouseStore();
-    const [enableOuter, setEnableOuter] = useState(false);
 
     const applyForce = (force) => {
         const info = getStoneInfos()[index];
@@ -21,7 +20,7 @@ const GoStone = ({x, y, color, index, mass, radius}) => {
 
     return (
         <div>
-            <div className='stone-container'
+            <div className={`stone-container ${getSelected() === index ? 'emphasized' : ''}`}
                 style={{
                     left: x, top: y, backgroundColor: color,
                     width: `${2*radius-1}px`, height: `${2*radius-1}px`,
@@ -30,15 +29,13 @@ const GoStone = ({x, y, color, index, mass, radius}) => {
                 onMouseDown={(e) => { 
                     setSelected(index);
                     setMouseDown(e.clientX, e.clientY);
-                    setEnableOuter(true);
                 }}
             >
             </div>
-            <div className={`stone-outer ${enableOuter ? '': 'hidden'}`}
+            <div className={`stone-outer ${getSelected() === index ? '': 'hidden'}`}
                 onMouseUp={(e) => {
                     setSelected(null);
                     setMouseUp(e.clientX, e.clientY);
-                    setEnableOuter(false);
 
                     const startPos = getStartPos();
                     const endPos = {x: e.clientX, y: e.clientY};

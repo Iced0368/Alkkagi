@@ -1,8 +1,8 @@
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { GoBoard } from './components';
-import { useGoStore } from './stores';
-import GoPhysics from './GoPhysics';
+import { useConfigStore, useGoStore } from './stores';
+import { GameManager, PhysicsManager } from './managers';
 
 const initialStones = [
   {x: 90, y: 60, color: 'white', mass: 10, radius: 10},
@@ -27,15 +27,18 @@ const initialStones = [
 ]
 
 function App() {
-  const {stoneInfos, setStoneInfos} = useGoStore();
-  const [physicsEnabled, setPhysicsEnabled] = useState(false);
+  const { setStoneInfos } = useGoStore();
+  const { enablePhysics, disablePhysics } = useConfigStore();
 
-  useEffect(() => { setStoneInfos(initialStones); setPhysicsEnabled(true);}, []);
+  useEffect(() => { setStoneInfos(initialStones); enablePhysics();}, []);
 
   return (
     <div className="App">
-      <GoPhysics enabled={physicsEnabled}/>
-      <GoBoard stones={stoneInfos}/> 
+      <PhysicsManager/>
+      <GameManager/>
+      
+      <GoBoard/> 
+      <button onClick={disablePhysics}>Disable</button>
     </div>
   );
 }
