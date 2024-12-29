@@ -36,9 +36,8 @@ function App() {
     <div className="App">
       <PhysicsManager/>
       <GameManager/>
-      
+
       <GoBoard/> 
-      <button onClick={disablePhysics}>Disable</button>
     </div>
   );
 }

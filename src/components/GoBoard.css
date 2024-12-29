@@ -7,7 +7,7 @@
     background-color: rgb(222, 184, 135);
 
     margin: 0 auto;
-    margin-top: 3rem;
+    margin-top: calc(50vh - 285px);
 
     user-select: none;
 }
